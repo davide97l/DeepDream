@@ -106,37 +106,33 @@ print('Layers: {}'.format(layers))
 print('Total number of feature channels:', sum(feature_nums))
 
 
-objfuncs = {'effect4-3': tf.square(T('mixed4c')),  # wolves
+objfuncs = {
+            # layers
+            'effect4-3': tf.square(T('mixed4c')),  # wolves
             'effect4-1': tf.square(T('mixed4a')),  # eyes
             'effect4-2': tf.square(T('mixed4b')),  # dogs
             'effect4-4': tf.square(T('mixed4d')),  # snakes
             'effect5-1': tf.square(T('mixed5a')),  # birds
             'effect5-2': tf.square(T('mixed4b')),  # dogs
+            # filters
             'flowers': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 139],
             'wolves': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 138],
             'homes': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 65],
             }
 
 # optional parameters
-show = False
+show = True
 save = True
-use_default_image = False
+use_default_image = False  # random noise
 # algorithm parameters
-iter_n = [100]  # how many gradient ascent step per octave
-octave_n = 2  # number of multiple scales of the image onto apply gradient ascent
+iter_n = [30]  # how many gradient ascent step per octave
+octave_n = 4  # number of multiple scales of the image onto apply gradient ascent
 octave_scale = 1.4  # how much resize the image with each octave
 # input parameters
 input_path = 'images'
 output_path = 'deepdreams'
-image_paths = ['beihai.jpg',
-               'brescia.jpg',
-               'chinese_venice.jpg',
-               'great_wall2.jpg',
-               'nanjing.jpg',
-               'statue.jpg',
-               'xian_park.jpg',
-               'xian_waterfall.jpg']
-effect = ['effect4-1', 'effect4-2', 'effect4-3', 'effect4-4', 'effect5-1']
+image_paths = ['tsinghua.jpg']
+effect = ['effect4-1', 'effect4-2', 'effect4-3', 'effect4-4', 'flowers']
 
 for image_path in image_paths:
     print(image_path)
