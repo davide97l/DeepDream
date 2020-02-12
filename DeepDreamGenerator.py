@@ -122,8 +122,8 @@ if __name__ == "__main__":
     use_default_image = False  # if True generates images from noise
 
     # algorithm parameters
-    iter_n = [100]  # how many gradient ascent step per octave
-    octave_n = 2  # number of multiple scales of the image onto apply gradient ascent
+    iter_n = [50]  # how many gradient ascent step per octave
+    octave_n = 3  # number of multiple scales of the image onto apply gradient ascent
     octave_scale = 1.4  # how much resize the image with each octave
 
     # input parameters

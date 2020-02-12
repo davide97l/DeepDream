@@ -21,7 +21,7 @@ def resize(path, t=800):
 if __name__ == "__main__":
     """
     Resize all jpg images in a specific path keeping the original rateo
-    Example: python resize_jpg.py -i images/ -t 1000
+    Example: python resize_jpg.py -i images/ -t 800
     Effect: All images whose width or height is above 1000 will be resized: (2000, 1500) -> (1000, 750)
     """
     ap = argparse.ArgumentParser()
