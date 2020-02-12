@@ -11,7 +11,11 @@ References:
 # How to easily generate your own images
 - Create two new directories and name them "images" and "deepdreams".
 - Put your images in the "images" folder.
-- Run the command "python resize_jpg.py -i images/" to resize that images that were too big, you can also ignore this step but it could significantly slow down the process.
+- Run the command 
+```
+"python resize_jpg.py -i images/
+```
+to resize that images that were too big, you can also ignore this step but it could significantly slow down the process.
 - Run the command "python DeepDreamGenerator.py" to transform the images.
 - Once the computation terminates you will find your processed images in the "deepdreams" folder, images will be grouped by sub-folders and each sub-folder will contain the processed images with different effects and sizes.
 - You should look inside the file "DeepDreamGenerator.py" to modify internal parameters and get different results.
