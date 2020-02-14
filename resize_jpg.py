@@ -15,7 +15,7 @@ def resize(path, t=800):
                 else:
                     im = im.resize((int(w / (h/t)), t), Image.ANTIALIAS)
             f, e = os.path.splitext(path+item)
-            im.save(f + '_res.jpg', 'JPEG', quality=100)
+            im.save(f + '.jpg', 'JPEG', quality=100)
 
 
 if __name__ == "__main__":

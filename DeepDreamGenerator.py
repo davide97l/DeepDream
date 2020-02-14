@@ -2,6 +2,7 @@ from __future__ import print_function
 import os
 import numpy as np
 import PIL.Image
+import random as rd
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 
@@ -103,8 +104,30 @@ objfuncs = {'effect4-3': tf.square(T('mixed4c')),  # wolves
             'effect4-4': tf.square(T('mixed4d')),  # snakes
             'effect5-1': tf.square(T('mixed5a')),  # birds
             'effect5-2': tf.square(T('mixed4b')),  # dogs
+            'dogs': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 143],
+            'sea': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 142],
+            'mouses': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 141],
+            'birds': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 140],
             'flowers': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 139],
             'wolves': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 138],
+            'temples': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 137],
+            'strings': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 136],
+            'rhombus': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 135],
+            'scales': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 134],
+            'roll': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 133],
+            'eggs': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 132],
+            'tunnels': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 131],
+            'mosaic': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 130],
+            'leaves': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 129],
+            'bowl': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 128],
+            'poles': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 127],
+            'shapes': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 126],
+            'legs': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 125],
+            'foxes': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 124],
+            'cars': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 123],
+            'rabbits': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 122],
+            'snakes': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 121],
+            'pipes': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 120],
             'homes': T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, 65],
             }
 
@@ -120,9 +143,11 @@ if __name__ == "__main__":
     show = False  # show images once processed
     save = True  # save images to folder
     use_default_image = False  # if True generates images from noise
+    random_effects = True  # apply random effects
+    num_samples = 1  # number of different random effects for each image (max: 144)
 
     # algorithm parameters
-    iter_n = [50]  # how many gradient ascent step per octave
+    iter_n = [30]  # how many gradient ascent step per octave
     octave_n = 3  # number of multiple scales of the image onto apply gradient ascent
     octave_scale = 1.4  # how much resize the image with each octave
 
@@ -130,7 +155,9 @@ if __name__ == "__main__":
     input_path = 'images/'
     output_path = 'deepdreams/'
     # see objfuncs dict to see possible effects
-    effect = ['effect4-1', 'effect4-2', 'effect4-3', 'effect4-4', 'effect5-1', 'flowers', 'homes']
+    effect = ['effect4-1', 'effect4-2', 'effect4-3', 'effect4-4', 'effect5-1', 'flowers', 'homes',
+              'mouses', 'birds', 'temples', 'strings', 'rhombus', 'roll', 'tunnels', 'scales', 'bowl',
+              'poles', 'shapes', 'cars', 'pipes']
 
     input_dir = os.listdir(input_path)
     for item in input_dir:
@@ -145,12 +172,28 @@ if __name__ == "__main__":
                 img = np.float32(img)
 
             generated_images = []
-            for i, eff in enumerate(effect):
-                print("effect: {}".format(i))
-                for n in iter_n:
-                    # apply deep dream algorithm
-                    images = deepdream(objfuncs[eff], img, iter_n=n, octave_n=octave_n, octave_scale=octave_scale)
-                    generated_images = generated_images + images
+            if random_effects:
+                if num_samples > 143:
+                    raise Exception("Max number of effects is 144, yours is " + str(num_samples))
+                used_effects = []
+                for i in range(num_samples):
+                    eff = rd.randint(1, 143)
+                    while eff in used_effects:
+                        eff = rd.randint(1, 143)
+                    used_effects.append(eff)
+                    obj = T('mixed4d_3x3_bottleneck_pre_relu')[:, :, :, eff]
+                    print("- effect: {} -".format(eff))
+                    for n in iter_n:
+                        # apply deep dream algorithm
+                        images = deepdream(obj, img, iter_n=n, octave_n=octave_n, octave_scale=octave_scale)
+                        generated_images = generated_images + images[-1:]
+            else:
+                for i, eff in enumerate(effect):
+                    print("- effect: {} -".format(i))
+                    for n in iter_n:
+                        # apply deep dream algorithm
+                        images = deepdream(objfuncs[eff], img, iter_n=n, octave_n=octave_n, octave_scale=octave_scale)
+                        generated_images = generated_images + images[-1:]
 
             for i, img_ in enumerate(generated_images):
                 if show:
